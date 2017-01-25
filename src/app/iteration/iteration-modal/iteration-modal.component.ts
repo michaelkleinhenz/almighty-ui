@@ -1,7 +1,10 @@
-import { cloneDeep } from 'lodash';
+import { Observable } from 'rxjs/Observable';
+import { Subscription } from 'rxjs/Subscription';
+
 import { IterationService } from './../iteration.service';
+import { SpaceService, Space } from './../../shared/mock-spaces.service';
 import { IterationModel } from './../../models/iteration.model';
-import { Component, ViewChild, OnInit, Output, EventEmitter, Input, OnChanges } from '@angular/core';
+import { Component, ViewChild, OnInit, OnDestroy, Output, EventEmitter } from '@angular/core';
 
 import * as moment from 'moment';
 
@@ -12,12 +15,33 @@ import { IMyOptions, IMyDateModel } from 'mydatepicker';
   templateUrl: './iteration-modal.component.html',
   styleUrls: ['./iteration-modal.component.scss']
 })
-export class FabPlannerIterationModalComponent implements OnInit, OnChanges {
+export class FabPlannerIterationModalComponent implements OnInit, OnDestroy {
+
+  private spaceSubscription: Subscription = null;
+
   @Output()
   public onSubmit = new EventEmitter();
 
   @ViewChild('createUpdateIterationDialog') createUpdateIterationDialog: any;
-  public iteration: IterationModel;
+  public iteration: IterationModel = {
+    attributes: {
+      name: '',
+      description: ''
+    },
+    relationships: {
+      space: {
+        data: {
+          id: '',
+          type: ''
+        },
+        links: {
+          self: ''
+        }
+      }
+    },
+    id: '',
+    type: 'iterations'
+  } as IterationModel;
   private validationError = false;
   private modalType: string = 'create';
   private submitBtnTxt: string = 'Create';
@@ -46,40 +70,16 @@ export class FabPlannerIterationModalComponent implements OnInit, OnChanges {
   };
 
   constructor(
+    private spaceService: SpaceService,
     private iterationService: IterationService) {}
 
   ngOnInit() {
-    this.resetValues();
+    this.spaceSubscription = this.spaceService.getCurrentSpaceBus().subscribe(space => console.log('[FabPlannerIterationModalComponent] New Space selected: ' + space.name));
   }
-
-  resetValues() {
-    this.iteration  = {
-      attributes: {
-        name: "",
-        description: ""
-      },
-      relationships: {
-        space: {
-          data: {
-            id: "",
-          }
-        }
-      },
-      type: "iterations"
-    } as IterationModel;
-    let today = moment();
-    this.startDate = { date: { year: today.format('YYYY'), month: today.format('M'), day: today.format('D') } };
-    let inaweek = moment().add(7, 'd');
-    this.endDate = { date: { year: inaweek.format('YYYY'), month: inaweek.format('M'), day: inaweek.format('D') } };
-    this.validationError = false;
-    this.spaceError = false;
-    let startDatePickerComponentCopy = Object.assign({}, this.startDatePickerOptions);
-    startDatePickerComponentCopy.componentDisabled = false;
-    this.startDatePickerOptions = startDatePickerComponentCopy;
-  }
-
-  ngOnChanges() {
-    console.log(this.modalType);
+  
+  ngOnDestroy() {
+    // prevent memory leak when component is destroyed
+    this.spaceSubscription.unsubscribe();
   }
 
   openCreateUpdateModal(
@@ -132,38 +132,20 @@ export class FabPlannerIterationModalComponent implements OnInit, OnChanges {
     this.resetValues();
   }
 
-
-  onStartDateChanged(event: IMyDateModel) {
-    // event properties are: event.date, event.jsdate, event.formatted and event.epoc
-    // Format 2016-11-29T23:18:14Z
-    this.startDate = { date: event.date };
-    this.iteration.attributes.startAt = moment(event.jsdate).format('YYYY-MM-DD') + 'T00:00:00Z';
-    // console.log(this.iteration.attributes.startAt);
-
-    this.endDatePickerOptions = {
-      disableUntil: event.date
-    }
-
-    // Set default end date in a week
-    let inaweek = moment(event.jsdate).add(7, 'd');
-    this.endDate = { date: { year: inaweek.format('YYYY'), month: inaweek.format('M'), day: inaweek.format('D') } };
-  }
-
-  onEndDateChanged(event: IMyDateModel) {
-    // event properties are: event.date, event.jsdate, event.formatted and event.epoc
-    this.endDate = { date: event.date };
-    this.iteration.attributes.endAt = moment(event.jsdate).format('YYYY-MM-DD') + 'T00:00:00Z';
-    // console.log(this.iteration.attributes.endAt);
-
+  resetValues() {
+    this.iteration.attributes.name = '';
+    this.iteration.attributes.description = '';
+    this.iteration.relationships.space.data.id = '';
+    this.validationError = false;
   }
 
   actionOnSubmit() {
     this.iteration.attributes.name = this.iteration.attributes.name.trim();
-    if (this.iteration.attributes.name !== "") {
+    if (this.iteration.attributes.name !== '') {
       this.validationError = false;
-      this.iterationService.getSpaces()
+      this.spaceService.getCurrentSpace()
         .then((data) => {
-          let url = data.relationships.iterations.links.related;
+          let url = data.iterationsUrl;
           this.iteration.relationships.space.data.id = data.id;
           this.spaceName = data.attributes.name;
 
@@ -201,7 +183,7 @@ export class FabPlannerIterationModalComponent implements OnInit, OnChanges {
           }
 
         })
-        .catch ((err) => {
+        .catch ((err: any) => {
           this.validationError = true;
           console.log('Spcae not found');
         });
