@@ -13,16 +13,19 @@ export class IterationService {
   public iterations: IterationModel[] = [];
   private headers = new Headers({'Content-Type': 'application/json'});
 
-  constructor(private http: Http, private auth: AuthenticationService, private logger: Logger) {
-      if (this.auth.getToken() != null) {
-        this.headers.set('Authorization', 'Bearer ' + this.auth.getToken());
-      }
-      if (Globals.inTestMode) {
-        logger.log('Iteration service running in ' + process.env.ENV + ' mode.');
-        this.http = new MockHttp(logger);
-      } else {
-        logger.log('Iteration service running in production mode.');
-      }
+  constructor(
+      private logger: Logger,
+      private http: Http, 
+      private auth: AuthenticationService) {
+    if (Globals.inTestMode) {
+      this.logger.log('IterationService running in ' + process.env.ENV + ' mode.');
+      this.http = new MockHttp(logger);
+    } else {
+      this.logger.log('IterationService running in production mode.');
+    }
+    if (this.auth.getToken() != null) {
+      this.headers.set('Authorization', 'Bearer ' + this.auth.getToken());
+    }
   }
 
   /**
@@ -52,9 +55,9 @@ export class IterationService {
             console.log('Fetch iteration API returned some error - ', error.message);
             return Promise.reject<IterationModel[]>([] as IterationModel[]);
           }
-        })
+        } )
     } else {
-      console.log('URL not matched');
+      this.logger.log('URL not matched');
       return Promise.reject<IterationModel[]>([] as IterationModel[]);
     }
   }
@@ -95,9 +98,9 @@ export class IterationService {
             console.log('Post iteration API returned some error - ', error.message);
             return Promise.reject<IterationModel>({} as IterationModel);
           }
-        })
+        } )
     } else {
-      console.log('URL not matched');
+      this.logger.log('URL not matched');
       return Promise.reject<IterationModel>( {} as IterationModel );
     }
   }
@@ -135,7 +138,7 @@ export class IterationService {
           console.log('Patch iteration API returned some error - ', error.message);
           return Promise.reject<IterationModel>({} as IterationModel);
         }
-      })
+      } )
   }
 
   /**
@@ -149,7 +152,7 @@ export class IterationService {
    */
   checkValidIterationUrl(url: string): Boolean {
     let urlArr: string[] = url.split('/');
-    let uuidRegExpPattern = new RegExp('[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}');
+    let uuidRegExpPattern = new RegExp('[^/]+');
     return (
       urlArr[urlArr.length - 1] === 'iterations' &&
       uuidRegExpPattern.test(urlArr[urlArr.length - 2]) &&

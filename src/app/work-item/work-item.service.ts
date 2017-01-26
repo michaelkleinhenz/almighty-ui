@@ -72,7 +72,7 @@ export class WorkItemService {
     }
     // set initial space and subscribe to the space service to recognize space switches
     this.spaceService.getCurrentSpace().then(this.switchSpace);
-    this.spaceSubscription = this.spaceService.getCurrentSpaceBus().subscribe(this.switchSpace);
+    this.spaceSubscription = this.spaceService.getCurrentSpaceBus().subscribe(space => this.switchSpace(space));
   }
 
   switchSpace(space: Space) {
@@ -949,7 +949,7 @@ export class WorkItemService {
   }
 
   searchLinkWorkItem(term: string): Promise<WorkItem[]> {
-    let searchUrl = baseSearchUrl + term;
+    let searchUrl = this.baseSearchUrl + term;
     return this.http
       .get(searchUrl)
       .toPromise()
