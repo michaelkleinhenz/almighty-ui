@@ -13,8 +13,8 @@ import { By }           from '@angular/platform-browser';
 
 import { TreeModule } from 'angular2-tree-component';
 import { TreeListComponent } from './treelist.component';
-import { User } from '../../models/user';
-import { WorkItem } from '../../models/work-item';
+import { User } from './../../../../src/app/models/user';
+import { WorkItem } from './../../../../src/app/models/work-item';
 
 describe('Treelist component - ', () => {
   let comp: TreeListComponent;

@@ -21,8 +21,8 @@ import { WorkItemListEntryComponent } from './work-item-list/work-item-list-entr
 import { WorkItemListComponent } from './work-item-list/work-item-list.component';
 import { WorkItemQuickAddModule } from './work-item-quick-add/work-item-quick-add.module';
 import { WorkItemRoutingModule } from './work-item-routing.module';
-import { TreeModule } from 'angular2-tree-component';
-import { TreeListModule, } from './../shared-component/treelist/treelist.module';
+
+import { TreeListComponent } from 'fabric8-shared-services';
 
 @NgModule({
   imports: [
@@ -38,8 +38,8 @@ import { TreeListModule, } from './../shared-component/treelist/treelist.module'
     WorkItemDetailModule,
     WorkItemRoutingModule,
     WorkItemQuickAddModule,
-    TreeModule,
-    TreeListModule
+    //TreeModule,
+    // TreeListModule
   ],
   declarations: [
     AlmArrayFilter,
@@ -49,7 +49,8 @@ import { TreeListModule, } from './../shared-component/treelist/treelist.module'
     WorkItemComponent,
     WorkItemListComponent,
     WorkItemBoardComponent,
-    WorkItemListEntryComponent
+    WorkItemListEntryComponent,
+    TreeListComponent
   ],
   providers: [
     AuthUserResolve,

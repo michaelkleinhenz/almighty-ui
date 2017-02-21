@@ -16,15 +16,15 @@
     }
   ],
   "license": "Apache-2.0",
-  "scripts": {
-  },
+  "scripts": {},
   "dependencies": {
     "@angular/common": "2.1.1",
     "@angular/compiler": "2.1.1",
     "@angular/compiler-cli": "2.1.1",
     "@angular/core": "2.1.1",
     "@angular/upgrade": "2.1.1",
-    "@types/lodash": "4.14.41"
+    "@types/lodash": "4.14.41",
+    "angular2-tree-component": "2.8.1"
   },
   "devDependencies": {
     "@types/core-js": "^0.9.34",

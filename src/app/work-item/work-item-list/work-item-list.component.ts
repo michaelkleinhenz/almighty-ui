@@ -24,7 +24,7 @@ import { WorkItemService }            from '../work-item.service';
 import { UserService } from '../../user/user.service';
 import { User } from '../../models/user';
 
-import { TreeListComponent } from '../../shared-component/treelist/treelist.component';
+import { TreeListComponent } from 'fabric8-shared-services';
 
 @Component({
   selector: 'alm-work-item-list',
