@@ -17,7 +17,6 @@ import { WorkItemService } from './work-item.service';
 import { WorkItemType } from './work-item-type';
 import { TreeListComponent } from 'fabric8-shared-services';
 
-
 @Component({
   selector: 'work-item',
   templateUrl: './work-item.component.html',

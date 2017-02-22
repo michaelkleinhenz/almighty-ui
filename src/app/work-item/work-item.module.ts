@@ -22,7 +22,7 @@ import { WorkItemListComponent } from './work-item-list/work-item-list.component
 import { WorkItemQuickAddModule } from './work-item-quick-add/work-item-quick-add.module';
 import { WorkItemRoutingModule } from './work-item-routing.module';
 
-import { TreeListComponent } from 'fabric8-shared-services';
+import { TreeListComponent, TreeListModule } from 'fabric8-shared-services';
 
 @NgModule({
   imports: [
@@ -38,8 +38,7 @@ import { TreeListComponent } from 'fabric8-shared-services';
     WorkItemDetailModule,
     WorkItemRoutingModule,
     WorkItemQuickAddModule,
-    //TreeModule,
-    // TreeListModule
+    TreeListModule
   ],
   declarations: [
     AlmArrayFilter,
