@@ -5,6 +5,7 @@ var gulp = require('gulp'),
     tsc = require('gulp-typescript'),
     wait = require('gulp-wait'),
     del = require('del'),
+    inlineNg2Template = require('gulp-inline-ng2-template'),
     exec = require('child_process').exec;
 
 var appSrc = 'src';
@@ -29,6 +30,7 @@ gulp.task('clean', function (done) {
 gulp.task('compile-typings', function() {
     return gulp.src([ appSrc + '/**/*.ts', '!' + appSrc + '/**/*.spec.ts'])
         .pipe(tsProject())
+        .pipe(inlineNg2Template({ base: '/', useRelativePaths: true }))
         .pipe(sourcemaps.init())
         .pipe(sourcemaps.write('./'))
         .pipe(gulp.dest(libraryDist + '/lib'));
