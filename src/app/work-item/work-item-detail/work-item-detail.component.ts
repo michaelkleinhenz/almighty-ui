@@ -505,15 +505,28 @@ export class WorkItemDetailComponent implements OnInit, AfterViewInit, OnDestroy
             this.iterationService.getIteration(workItem.relationships.iteration),
             this.workItemService.resolveAssignees(workItem.relationships.assignees),
             this.workItemService.resolveCreator2(workItem.relationships.creator),
-            this.workItemService.resolveLinks(workItem.links.self + '/relationships/links')
+            this.workItemService.resolveLinks(workItem.links.self + '/relationships/links'),
+            this.collaboratorService.getCollaborators(),
+            this.workItemService.resolveComments(workItem.relationships.comments.links.related)
         );
       })
-      .map(([workItem, workItemTypes, area, iteration, assignees, creator, [links, includes]]) => {
+      .map(([workItem, workItemTypes, area, iteration, assignees, creator, [links, includes], users, comments]) => {
+
+        // resolve comments
+        workItem.relationships.comments = Object.assign(
+          workItem.relationships.comments,
+          comments
+        );
+        workItem.relationships.comments.data =
+          workItem.relationships.comments.data.map((comment) => {
+            comment.relationships['created-by'].data = users.find(user => user.id === comment.relationships['created-by'].data.id);
+            return comment;
+          });
+
         // Resolve area
         workItem.relationships.area = {
           data: area
         };
-
         // Resolve iteration
         if (iteration) {
           workItem.relationships.iteration = {
