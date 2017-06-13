@@ -84,7 +84,7 @@ export class AreaService {
 
   getArea(area: any): Observable<AreaModel> {
     if (Object.keys(area).length) {
-      let areaLink = area.data.links.self;
+      let areaLink = area.data.links?area.data.links.self:area.links.related;
       return this.http.get(areaLink)
         .map(arearesp => arearesp.json().data);
     } else {

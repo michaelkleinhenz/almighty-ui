@@ -152,7 +152,7 @@ export class WorkItemService {
   getWorkItems(pageSize: number = 20, filters: any[] = []): Observable<{workItems: WorkItem[], nextLink: string, totalCount: number | null}> {
     if (this._currentSpace) {
       this.workItemUrl = this._currentSpace.links.self + '/workitems';
-      let url = this.workItemUrl + '?page[limit]=' + pageSize;
+      let url = this.workItemUrl + '?page[limit]=' + pageSize + "&page[offset]=0";
       filters.forEach((item) => {
         url += '&' + item.paramKey + '=' + item.value;
       });
@@ -160,7 +160,7 @@ export class WorkItemService {
         .map((resp) => {
           return {
             workItems: resp.json().data as WorkItem[],
-            nextLink: resp.json().links.next,
+            nextLink: resp.json().links ? resp.json().link.next: undefined,
             totalCount: resp.json().meta ? resp.json().meta.totalCount : 0
           };
         }).catch((error: Error | any) => {
@@ -265,8 +265,14 @@ export class WorkItemService {
       return this.http.get(this._currentSpace.links.self + '/workitems/' + id)
         .map(item => item.json().data)
         .catch((error: Error | any) => {
-          this.notifyError('Getting work item data failed.', error);
-          return Observable.throw(new Error(error.message));
+          // if that request does return an error, try the baseURL
+          return this.http.get(this._currentSpace.links.base + '/workitems/' + id)
+            .map(item => item.json().data)
+            .catch((error: Error | any) => {
+              // if that also fails, return the error
+              this.notifyError('Getting work item data failed.', error);
+              return Observable.throw(new Error(error.message));
+            });
         });
     } else {
       return Observable.of<WorkItem>( new WorkItem() );
@@ -355,6 +361,9 @@ export class WorkItemService {
   }
 
   resolveAssignees(assignees: any): Observable<User[]> {
+    if (assignees.data && assignees.data.length==0) {
+      return Observable.of([]);
+    }
     if (Object.keys(assignees).length) {
       let observableBatch = assignees.data.map((assignee) => {
         return this.http.get(assignee.links.self)
@@ -372,7 +381,7 @@ export class WorkItemService {
 
   resolveCreator2(creator): Observable<User>{
     if (Object.keys(creator).length) {
-      let creatorLink = creator.data.links.self;
+      let creatorLink = creator.data.links?creator.data.links.self:creator.links.related;
       return this.http.get(creatorLink)
         .map(creator => creator.json().data)
         .catch((error: Error | any) => {

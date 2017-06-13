@@ -37,6 +37,11 @@ export class WorkItemRelations {
       hasChildren: boolean;
     };
   };
+  links?: {
+    links: {
+      related: string;
+    };
+  };
   comments?: {
     data?: Comment[];
     links: {

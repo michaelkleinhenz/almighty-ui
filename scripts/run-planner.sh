@@ -112,7 +112,7 @@ runPlanner
 
 if [ $STANDALONE -eq 1 ]
   then
-    export NODE_ENV=inmemory
+    #export NODE_ENV=inmemory
     linkPlannerToRuntime
     runStandalone
   else

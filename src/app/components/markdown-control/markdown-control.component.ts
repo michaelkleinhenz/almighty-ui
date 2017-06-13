@@ -110,11 +110,13 @@ constructor(
               if(this.detailWrapper.nativeElement.clientHeight > this.maxHeight) {
                 this.showMore = true;
               } else {
-                let cond1 = this.detailText.nativeElement.clientHeight > this.detailWrapper.nativeElement.clientHeight;
-                let cond2 = this.detailText.nativeElement.clientHeight > this.initHeight;
-                this.showMore = cond1 && cond2;
-                //console.log('Detail text', this.detailText.nativeElement.clientHeight);
-                //console.log('Detail wrapper', this.detailWrapper.nativeElement.clientHeight)
+                if (this.detailText) {
+                  let cond1 = this.detailText.nativeElement.clientHeight > this.detailWrapper.nativeElement.clientHeight;
+                  let cond2 = this.detailText.nativeElement.clientHeight > this.initHeight;
+                  this.showMore = cond1 && cond2;
+                  //console.log('Detail text', this.detailText.nativeElement.clientHeight);
+                  //console.log('Detail wrapper', this.detailWrapper.nativeElement.clientHeight)
+                }
               }
             }, 10);
 

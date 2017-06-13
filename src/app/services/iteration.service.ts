@@ -202,7 +202,7 @@ export class IterationService {
 
   getIteration(iteration: any): Observable<IterationModel> {
     if (Object.keys(iteration).length) {
-      let iterationLink = iteration.data.links.self;
+      let iterationLink = iteration.data.links?iteration.data.links.self:iteration.links.related;
       return this.http.get(iterationLink)
         .map(iterationresp => iterationresp.json().data)
         .catch((error: Error | any) => {

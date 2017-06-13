@@ -215,9 +215,11 @@ export class WorkItemDetailComponent implements OnInit, AfterViewInit, OnDestroy
           this.workItemService.resolveAssignees(workItem.relationships.assignees),
           this.workItemService.resolveCreator2(workItem.relationships.creator),
           this.workItemService.resolveComments(workItem.relationships.comments.links.related),
-          this.workItemService.resolveLinks(workItem.links.self + '/relationships/links')
+          ////this.workItemService.resolveLinks(workItem.links.self + '/relationships/links') // TODO API SWITCH HERE
+          this.workItemService.resolveLinks(workItem.relationships.links.links.related)
         );
       })
+      //.subscribe(([workItem, users, workItemTypes, area, iteration, assignees, creator, comments, [links, includes]]) => {
       .subscribe(([workItem, users, workItemTypes, area, iteration, assignees, creator, comments, [links, includes]]) => {
 
         // Resolve area
