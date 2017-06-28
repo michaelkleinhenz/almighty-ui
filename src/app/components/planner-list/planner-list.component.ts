@@ -48,7 +48,7 @@ import { WorkItemListEntryComponent } from '../work-item-list-entry/work-item-li
 import { WorkItemService }            from '../../services/work-item.service';
 import { CollaboratorService } from '../../services/collaborator.service';
 
-import { TreeListComponent } from 'ngx-widgets';
+import { TreeListComponent } from '../tree-list/tree-list.component';
 
 @Component({
   encapsulation: ViewEncapsulation.None,
@@ -96,6 +96,8 @@ export class PlannerListComponent implements OnInit, AfterViewInit, DoCheck, OnD
   private allowedFilterParams: string[] = ['iteration'];
   private currentIteration: BehaviorSubject<string | null>;
   private loggedInUser: User | Object = {};
+
+  randomArray: object[] = [{id:1}, {id:2} ];
 
   // See: https://angular2-tree.readme.io/docs/options
   treeListOptions = {
@@ -170,7 +172,6 @@ export class PlannerListComponent implements OnInit, AfterViewInit, DoCheck, OnD
 
   initWiItems(event: any): void {
     this.pageSize = event.pageSize;
-
     // Space subscription should only listen to changes
     // till the page is changed to something else.
     // Unsubscribe in ngOnDestroy acts way after the new page inits
@@ -178,7 +179,6 @@ export class PlannerListComponent implements OnInit, AfterViewInit, DoCheck, OnD
     const takeUntilObserver = this.router.events
     .filter((event) => event instanceof NavigationStart)
     .filter((event: NavigationStart) => event.url.indexOf('plan/board') > -1 || event.url.indexOf('plan') == -1)
-
     this.spaceSubscription =
       // On any of these event inside combineLatest
       // We load the work items
@@ -577,7 +577,7 @@ export class PlannerListComponent implements OnInit, AfterViewInit, DoCheck, OnD
     }
   }
 
-  onSelect() {
-
+  onSelect($event) {
+    this.treeList.itemSelected($event);
   }
 }

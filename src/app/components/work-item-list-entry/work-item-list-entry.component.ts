@@ -86,15 +86,18 @@ export class WorkItemListEntryComponent implements OnInit, OnDestroy {
   }
 
   select(): void {
-    this.listItem.setSelected(true);
+    if (this.listItem)
+      this.listItem.setSelected(true);
   }
 
   deselect(): void {
-    this.listItem.setSelected(false);
+    if (this.listItem)
+      this.listItem.setSelected(false);
   }
 
   isSelected(): boolean {
-    return this.listItem.isSelected();
+    if (this.listItem)
+      return this.listItem.isSelected();
   }
 
   isChecked(): boolean {
@@ -221,7 +224,8 @@ export class WorkItemListEntryComponent implements OnInit, OnDestroy {
     } else {
       this.selectedItemId = 0;
     }
-    this.listItem.setSelected(this.selectedItemId == this.workItem.id);
+    if (this.listItem)
+      this.listItem.setSelected(this.selectedItemId == this.workItem.id);
   }
 
   listenToEvents() {

@@ -34,6 +34,8 @@ import { WorkItemDetailModule } from '../work-item-detail/work-item-detail.modul
 import { WorkItemDetailAddTypeSelectorModule } from '../work-item-create/work-item-create.module';
 import { PlannerListComponent } from './planner-list.component';
 import { WorkItemListEntryComponent } from '../work-item-list-entry/work-item-list-entry.component';
+import { TreeListComponent } from '../tree-list/tree-list.component'
+import { TreeListItemComponent } from '../tree-list/tree-list-item.component'
 import { WorkItemQuickAddModule } from '../work-item-quick-add/work-item-quick-add.module';
 import { WorkItemService } from '../../services/work-item.service';
 import { MockHttp } from '../../mock/mock-http';
@@ -93,6 +95,8 @@ if (process.env.ENV == 'inmemory') {
     WorkItemDetailAddTypeSelectorModule
   ],
   declarations: [
+    TreeListComponent,
+    TreeListItemComponent,
     PlannerListComponent,
     WorkItemListEntryComponent
   ],
