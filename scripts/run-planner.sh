@@ -22,7 +22,7 @@ PLANNER_HOME="$SCRIPTPATH/.."
 PLATFORM_HOME="$PLANNER_HOME/../fabric8-ui"
 REINSTALL=0
 STANDALONE=0
-NODE_ENV=production
+NODE_ENV=inmemory
 
 # fire up getopt
 TEMP=`getopt -o rsp:f: --long reinstall,standalone,plannerhome:,platformhome: -n 'run-planner.sh' -- "$@"`
